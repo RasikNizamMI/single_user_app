@@ -23,26 +23,32 @@ const TabNavigator: React.FC = () => {
   const {t} = useTranslation();
 
   const getTabIcon = (routeName: keyof TabParamList, props: TabIconProps) => {
-    const {focused, color} = props;
+    const {focused} = props;
 
     // Replace with your actual icon sources
     const icons = {
       Home: Images.homeActive,
-      Services: Images.tasksActive,
+      Services: Images.servicesActive,
       Chat: Images.chatActive,
       More: Images.moreActive,
     };
 
     return (
-      <View
-        style={[styles.iconContainer, focused && styles.activeIconContainer]}>
-        <Image
-          source={icons[routeName]}
-          style={[styles.tabIcon, {tintColor: color}]}
-        />
-        {(routeName === 'Chat') && (
-          <View style={styles.notificationBadge} />
-        )}
+      <View style={styles.tabContainer}>
+        <View
+          style={[
+            styles.iconBackground,
+            focused && styles.activeIconBackground,
+          ]}>
+          <Image
+            source={icons[routeName]}
+            style={[
+              styles.tabIcon,
+              {tintColor: focused ? '#007AFF' : '#8E8E93'},
+            ]}
+          />
+          {routeName === 'Chat' && <View style={styles.chatBadge} />}
+        </View>
       </View>
     );
   };
@@ -58,6 +64,7 @@ const TabNavigator: React.FC = () => {
         tabBarInactiveTintColor: '#8E8E93',
         tabBarItemStyle: styles.tabBarItem,
         tabBarIcon: props => getTabIcon(route.name, props),
+        tabBarLabelPosition: 'below-icon',
       })}>
       <Tab.Screen
         name="Home"
@@ -67,7 +74,7 @@ const TabNavigator: React.FC = () => {
       <Tab.Screen
         name="Services"
         component={ServicesScreen}
-        options={{tabBarLabel: t('navigation.tasks')}}
+        options={{tabBarLabel: t('navigation.services')}}
       />
       <Tab.Screen
         name="Chat"
@@ -85,53 +92,67 @@ const TabNavigator: React.FC = () => {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 70,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
-    paddingBottom: 10,
-    paddingTop: 5,
+    height: 95,
+    backgroundColor: '#F8F9FA',
+    borderTopWidth: 0,
+    paddingBottom: 20,
+    paddingTop: 25,
+    paddingHorizontal: 20,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: -2,
+      height: -1,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 5,
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 8,
   },
   tabBarItem: {
-    paddingVertical: 5,
+    paddingVertical: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  iconContainer: {
-    width: 50,
-    height: 40,
+  tabContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  iconBackground: {
+    width: 60,
+    height: 70,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    borderRadius: 12,
+    borderRadius: 8,
+    backgroundColor: 'transparent',
   },
-  activeIconContainer: {
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+  activeIconBackground: {
+    backgroundColor: 'rgba(0, 122, 255, 0.15)',
   },
   tabIcon: {
-    width: 24,
-    height: 24,
+    width: 26,
+    height: 26,
     resizeMode: 'contain',
   },
   tabBarLabel: {
-    fontSize: 12,
-    marginTop: 2,
+    fontSize: 13,
     fontWeight: '500',
+    marginTop: 0,
+    textAlign: 'center',
   },
-  notificationBadge: {
+  chatBadge: {
     position: 'absolute',
-    top: 5,
+    top: 20,
     right: 12,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FF3B30',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#007AFF',
+  },
+  badgeContent: {
+    width: 10,
+    height: 6,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 3,
   },
 });
 

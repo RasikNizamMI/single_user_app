@@ -31,6 +31,12 @@ export default {
     detailTitle: 'Site Evaluation Details',
     addTitle: 'Add New Site Evaluation',
   },
+  navigation: {
+    home: 'Home',
+    services: 'Services',
+    chat: 'Chat',
+    more: 'More',
+  },
   common: {
     cancel: 'Cancel',
     add: 'Add',
