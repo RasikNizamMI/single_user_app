@@ -20,6 +20,30 @@ export type MainStackParamList = {
   Profile: undefined;
   Settings: undefined;
   Notifications: undefined;
+  // Payment screens
+  Payment: undefined;
+  ChoosePaymentMethod: {
+    paymentData: {
+      amount: string;
+      service: string;
+      dueDate: string;
+    };
+  };
+  PaymentInvoice: {
+    paymentData: {
+      amount: string;
+      service: string;
+      dueDate: string;
+    };
+    selectedMethod?: {
+      id: string;
+      type: string;
+      label: string;
+      lastFour: string;
+    };
+  };
+  PaymentHistory: undefined;
+  SavedPaymentModes: undefined;
 };
 
 export type RootStackParamList = {
@@ -27,3 +51,10 @@ export type RootStackParamList = {
   Main: NavigatorScreenParams<MainStackParamList>;
   Splash: undefined;
 };
+
+// Navigation hook types
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}

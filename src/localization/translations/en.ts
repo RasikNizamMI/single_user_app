@@ -1,24 +1,39 @@
 export default {
-     register: {
-      title: 'Create Account',
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      email: 'Email',
-      password: 'Password',
-      confirmPassword: 'Confirm Password',
-      button: 'Sign Up',
-      loginPrompt: 'Already have an account? Login',
-      agreeToTerms: 'I agree to the',
-      termsLink: 'Terms and Conditions',
-    },
-    errors: {
-      required: '{{field}} is required',
-      invalidEmail: 'Invalid email address',
-      passwordMatch: 'Passwords must match',
-      minLength: 'Must be at least {{min}} characters',
-      termsRequired: 'You must accept the terms and conditions'
-    },
-  
+  common: {
+    error: 'Error',
+    viewDetails: 'View Details',
+    loading: 'Loading...',
+    retry: 'Retry',
+    cancel: 'Cancel',
+    add: 'Add',
+    ok: 'OK',
+    save: 'Save',
+    edit: 'Edit',
+    delete: 'Delete',
+    share: 'Share',
+    close: 'Close',
+    back: 'Back',
+    next: 'Next',
+    previous: 'Previous',
+    confirm: 'Confirm',
+    success: 'Success',
+  },
+  errors: {
+    refreshFailed: 'Failed to refresh data. Please try again.',
+    availabilityUpdateFailed:
+      'Failed to update availability status. Please try again.',
+    networkError:
+      'Network connection error. Please check your internet connection.',
+    serverError: 'Server error. Please try again later.',
+    unknownError: 'An unexpected error occurred. Please try again.',
+    loadFailed: 'Failed to load data. Please try again.',
+  },
+  navigation: {
+    home: 'Home',
+    services: 'Services',
+    chat: 'Chat',
+    more: 'More',
+  },
   login: {
     title: 'Login',
     emailPlaceholder: 'Email',
@@ -40,26 +55,39 @@ export default {
       'Please check your email for instructions to reset your password',
     okButton: 'OK',
   },
-  dashboard: {
-    todayTasks: "Today's Task Overview",
-    siteEvaluations: 'Site Evaluation',
-    concerns: 'Concern',
-    clockOutRequests: 'Clock-Out Requests',
+  home: {
+    welcome: 'Welcome',
+    servicesOverview: 'Your Services Overview',
+    thisMonth: 'This month',
+    upcoming: 'Upcoming',
+    moreServices: 'More Services',
+    availability: {
+      label: 'Your Availability',
+      available: 'Available',
+      unavailable: 'Unavailable',
+    },
+    payments: {
+      due: '{{count}} Payment due',
+      due_plural: '{{count}} Payments due',
+    },
   },
   siteEvaluation: {
     title: 'Site Evaluation',
     detailTitle: 'Site Evaluation Details',
     addTitle: 'Add New Site Evaluation',
   },
-  navigation: {
-    home: 'Home',
-    services: 'Services',
-    chat: 'Chat',
-    more: 'More',
+  services: {
+    trashCollection: 'Trash Collection',
+    houseCleaning: 'House Cleaning',
+    lawnCare: 'Lawn Care',
+    houseCleaningDescription: 'Professional cleaning services',
+    lawnCareDescription: 'Maintain your garden',
   },
-  common: {
-    cancel: 'Cancel',
-    add: 'Add',
-    ok: 'OK',
+  stats: {
+    observations: 'Observations',
+    concerns: 'Concerns',
+    total: 'Total',
+    new: 'New',
+    resolved: 'Resolved',
   },
 };

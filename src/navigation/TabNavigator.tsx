@@ -1,55 +1,88 @@
+// navigation/TabNavigator.tsx
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
+import {Image, StyleSheet, View, Text, Platform} from 'react-native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useTranslation} from 'react-i18next';
-import {TabParamList} from '../types/navigation';
-
-// Import screens
 import HomeScreen from '../screens/Home/HomeScreen';
 import ServicesScreen from '../screens/Services/ServicesScreen';
 import ChatScreen from '../screens/Chat/ChatScreen';
 import MoreScreen from '../screens/More/MoreScreen';
 import Images from '../constants/images';
+import theme from '../constants/theme'; // Import your theme
+import {TabParamList} from '../types/navigation';
 
 const Tab = createBottomTabNavigator<TabParamList>();
 
 interface TabIconProps {
+  routeName: keyof TabParamList;
   focused: boolean;
-  color: string;
-  size: number;
+  badge?: number;
 }
 
 const TabNavigator: React.FC = () => {
   const {t} = useTranslation();
 
-  const getTabIcon = (routeName: keyof TabParamList, props: TabIconProps) => {
-    const {focused} = props;
+  // Tab configuration with badges
+  const tabConfig = {
+    Home: {badge: 0},
+    Services: {badge: 0},
+    Chat: {badge: 3}, // Example: 3 unread messages
+    More: {badge: 0},
+  };
 
-    // Replace with your actual icon sources
+  const renderTabIcon = ({routeName, focused, badge}: TabIconProps) => {
     const icons = {
-      Home: Images.homeActive,
-      Services: Images.servicesActive,
-      Chat: Images.chatActive,
-      More: Images.moreActive,
+      Home: focused ? Images.homeActive : Images.homeActive,
+      Services: focused ? Images.servicesActive : Images.servicesActive,
+      Chat: focused ? Images.chatActive : Images.chatActive,
+      More: focused ? Images.moreActive : Images.moreActive,
     };
 
+    const iconColor = focused
+      ? theme.colors.primary
+      : theme.colors.text.secondary;
+
     return (
-      <View style={styles.tabContainer}>
-        <View
-          style={[
-            styles.iconBackground,
-            focused && styles.activeIconBackground,
-          ]}>
+      <View style={styles.tabIconContainer}>
+        <View style={styles.iconWrapper}>
           <Image
             source={icons[routeName]}
             style={[
               styles.tabIcon,
-              {tintColor: focused ? '#007AFF' : '#8E8E93'},
+              {tintColor: iconColor},
+              focused && styles.focusedIcon,
             ]}
           />
-          {routeName === 'Chat' && <View style={styles.chatBadge} />}
+          {badge && badge > 0 && (
+            <View style={styles.badge}>
+              <Text style={styles.badgeText}>
+                {badge > 99 ? '99+' : badge.toString()}
+              </Text>
+            </View>
+          )}
         </View>
+
+        {/* Active indicator dot */}
+        {/* {focused && <View style={styles.activeIndicator} />} */}
       </View>
+    );
+  };
+
+  const renderTabLabel = (label: string, focused: boolean) => {
+    return (
+      <Text
+        style={[
+          styles.tabLabel,
+          {
+            color: focused ? theme.colors.primary : theme.colors.text.secondary,
+            fontFamily: focused
+              ? theme.typography.fontFamily.medium
+              : theme.typography.fontFamily.regular,
+          },
+        ]}
+        numberOfLines={1}>
+        {label}
+      </Text>
     );
   };
 
@@ -58,33 +91,49 @@ const TabNavigator: React.FC = () => {
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabBarLabel,
-        tabBarActiveTintColor: '#007AFF',
-        tabBarInactiveTintColor: '#8E8E93',
+        tabBarLabel: ({focused}) =>
+          renderTabLabel(t(`navigation.${route.name.toLowerCase()}`), focused),
+        tabBarIcon: ({focused}) =>
+          renderTabIcon({
+            routeName: route.name,
+            focused,
+            badge: tabConfig[route.name]?.badge,
+          }),
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.text.secondary,
+        tabBarStyle: [styles.tabBar, theme.shadow.md],
+        tabBarLabelStyle: styles.tabLabelStyle,
         tabBarItemStyle: styles.tabBarItem,
-        tabBarIcon: props => getTabIcon(route.name, props),
-        tabBarLabelPosition: 'below-icon',
       })}>
       <Tab.Screen
         name="Home"
         component={HomeScreen}
-        options={{tabBarLabel: t('navigation.home')}}
+        options={{
+          tabBarAccessibilityLabel: t('navigation.home'),
+        }}
       />
       <Tab.Screen
         name="Services"
         component={ServicesScreen}
-        options={{tabBarLabel: t('navigation.services')}}
+        options={{
+          tabBarAccessibilityLabel: t('navigation.services'),
+        }}
       />
       <Tab.Screen
         name="Chat"
         component={ChatScreen}
-        options={{tabBarLabel: t('navigation.chat')}}
+        options={{
+          tabBarAccessibilityLabel: t('navigation.chat'),
+          tabBarBadge:
+            tabConfig.Chat.badge > 0 ? tabConfig.Chat.badge : undefined,
+        }}
       />
       <Tab.Screen
         name="More"
         component={MoreScreen}
-        options={{tabBarLabel: t('navigation.more')}}
+        options={{
+          tabBarAccessibilityLabel: t('navigation.more'),
+        }}
       />
     </Tab.Navigator>
   );
@@ -92,67 +141,75 @@ const TabNavigator: React.FC = () => {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 95,
-    backgroundColor: '#F8F9FA',
-    borderTopWidth: 0,
-    paddingBottom: 20,
-    paddingTop: 25,
-    paddingHorizontal: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: -1,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 8,
+    height: Platform.OS === 'ios' ? 88 : 70,
+    paddingTop: theme.spacing.sm,
+    paddingBottom: Platform.OS === 'ios' ? 34 : theme.spacing.sm,
+    paddingHorizontal: theme.spacing.sm,
+    backgroundColor: theme.colors.background.white,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: theme.colors.border,
   },
   tabBarItem: {
-    paddingVertical: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingVertical: theme.spacing.xs,
   },
-  tabContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  iconBackground: {
-    width: 60,
-    height: 70,
+  tabIconContainer: {
     alignItems: 'center',
     justifyContent: 'center',
     position: 'relative',
-    borderRadius: 8,
-    backgroundColor: 'transparent',
   },
-  activeIconBackground: {
-    backgroundColor: 'rgba(0, 122, 255, 0.15)',
+  iconWrapper: {
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   tabIcon: {
-    width: 26,
-    height: 26,
+    width: 24,
+    height: 24,
     resizeMode: 'contain',
   },
-  tabBarLabel: {
-    fontSize: 13,
-    fontWeight: '500',
-    marginTop: 0,
-    textAlign: 'center',
+  focusedIcon: {
+    width: 26,
+    height: 26,
   },
-  chatBadge: {
+  tabLabel: {
+    fontSize: theme.typography.fontSize.xs,
+    marginTop: theme.spacing.xs,
+    letterSpacing: -0.1,
+  },
+  tabLabelStyle: {
+    fontSize: theme.typography.fontSize.xs,
+    fontFamily: theme.typography.fontFamily.medium,
+    marginTop: theme.spacing.xs,
+    color: theme.colors.text.secondary,
+  },
+  activeIndicator: {
     position: 'absolute',
-    top: 20,
-    right: 12,
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: '#007AFF',
+    top: -8,
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: theme.colors.primary,
   },
-  badgeContent: {
-    width: 10,
-    height: 6,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 3,
+  badge: {
+    position: 'absolute',
+    top: -6,
+    right: -8,
+    backgroundColor: theme.colors.error,
+    borderRadius: 10,
+    minWidth: 18,
+    height: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: theme.spacing.xs,
+    borderWidth: 2,
+    borderColor: theme.colors.background.white,
+  },
+  badgeText: {
+    fontSize: 9,
+    fontFamily: theme.typography.fontFamily.bold,
+    color: theme.colors.text.inverse,
+    textAlign: 'center',
+    lineHeight: 14,
   },
 });
 
