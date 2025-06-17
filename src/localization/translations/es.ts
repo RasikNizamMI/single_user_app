@@ -1,4 +1,25 @@
 export default {
+  
+    register: {
+      title: 'Crear Cuenta',
+      firstName: 'Nombre',
+      lastName: 'Apellido',
+      email: 'correo',
+      password: 'Contraseña',
+      confirmPassword: 'Confirmar Contraseña',
+      button: 'Registrarse',
+      loginPrompt: '¿Ya tienes cuenta? Inicia sesión',
+      agreeToTerms: 'Acepto los',
+      termsLink: 'Términos y Condiciones'
+    },
+    errors: {
+      required: '{{field}} es obligatorio',
+      invalidEmail: 'Correo inválido',
+      passwordMatch: 'Las contraseñas deben coincidir',
+      minLength: 'Mínimo {{min}} caracteres',
+      termsRequired: 'Debes aceptar los términos y condiciones'
+    },
+ 
   login: {
     title: 'Iniciar Sesión',
     emailPlaceholder: 'ID de Correo',
