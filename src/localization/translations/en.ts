@@ -1,4 +1,24 @@
 export default {
+     register: {
+      title: 'Create Account',
+      firstName: 'First Name',
+      lastName: 'Last Name',
+      email: 'Email',
+      password: 'Password',
+      confirmPassword: 'Confirm Password',
+      button: 'Sign Up',
+      loginPrompt: 'Already have an account? Login',
+      agreeToTerms: 'I agree to the',
+      termsLink: 'Terms and Conditions',
+    },
+    errors: {
+      required: '{{field}} is required',
+      invalidEmail: 'Invalid email address',
+      passwordMatch: 'Passwords must match',
+      minLength: 'Must be at least {{min}} characters',
+      termsRequired: 'You must accept the terms and conditions'
+    },
+  
   login: {
     title: 'Login',
     emailPlaceholder: 'Email',

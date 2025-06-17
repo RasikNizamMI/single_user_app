@@ -5,10 +5,15 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import {User, AuthState, LoginCredentials} from '../types/auth';
+import { User, AuthState, LoginCredentials } from '../types/auth';
+
+interface LoginResult {
+  success: boolean;
+  message: string;
+}
 
 interface AuthContextType extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<boolean>;
+  login: (credentials: LoginCredentials) => Promise<LoginResult>;
   logout: () => void;
   clearError: () => void;
 }
@@ -19,16 +24,16 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     user: null,
-    loading: false, // Initially false
+    loading: false,
     error: null,
   });
 
-  const login = async (credentials: LoginCredentials): Promise<boolean> => {
-    setAuthState(prev => ({...prev, loading: true, error: null}));
+  const login = async (credentials: LoginCredentials): Promise<LoginResult> => {
+    setAuthState(prev => ({ ...prev, loading: true, error: null }));
 
     return new Promise(resolve => {
       setTimeout(() => {
@@ -38,26 +43,29 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
         ) {
           const user: User = {
             id: '1',
-            name: 'Test User',
             email: credentials.email,
             role: 'user',
+            firstName: 'Test',
+            lastName: 'User',
           };
+
           setAuthState({
             isAuthenticated: true,
             user,
             loading: false,
             error: null,
           });
-          resolve(true);
+
+          resolve({ success: true, message: 'Login successful' });
         } else {
           setAuthState(prev => ({
             ...prev,
             loading: false,
             error: 'Invalid email or password',
           }));
-          resolve(false);
+          resolve({ success: false, message: 'Invalid email or password' });
         }
-      }, 5000); // Simulate 5s delay
+      }, 2000); // You can adjust delay time if needed
     });
   };
 
@@ -71,7 +79,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
   };
 
   const clearError = () => {
-    setAuthState(prev => ({...prev, error: null}));
+    setAuthState(prev => ({ ...prev, error: null }));
   };
 
   const value: AuthContextType = {
@@ -86,7 +94,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;

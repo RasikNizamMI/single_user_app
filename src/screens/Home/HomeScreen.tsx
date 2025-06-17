@@ -12,7 +12,11 @@ const HomeScreen: React.FC = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <Text style={styles.title}>{t('screens.home.title')}</Text>
-        <Text style={styles.welcome}>Welcome, {user?.name || 'User'}!</Text>
+  
+        <Text style={styles.welcome}>
+          Welcome, {`${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || 'User'}!
+        </Text>
+  
         <Text style={styles.subtitle}>{t('screens.home.welcome')}</Text>
         <Text style={styles.description}>
           This is your main dashboard where you can access all features and
@@ -21,7 +25,8 @@ const HomeScreen: React.FC = () => {
       </View>
     </SafeAreaView>
   );
-};
+  
+ };
 
 const styles = StyleSheet.create({
   container: {
