@@ -106,7 +106,7 @@ const SavedPaymentModesScreen: React.FC = () => {
       <TouchableOpacity
         style={styles.editButton}
         onPress={() => handleEditPaymentMethod(method)}>
-        <Text style={styles.editButtonText}>Edit</Text>
+        <Text style={styles.editButtonText}>{t('common.edit')}</Text>
       </TouchableOpacity>
     </View>
   );
@@ -128,27 +128,27 @@ const SavedPaymentModesScreen: React.FC = () => {
         backgroundColor={theme.colors.background.white}
       />
 
-      <Header title="Saved Payment Modes" showBackButton />
+      <Header title={t('payment.savedPaymentModes')} showBackButton />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         {/* Credit & Debit Cards Section */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Credit & Debit Cards</Text>
+          <Text style={styles.sectionTitle}>{t('payment.creditCards')}</Text>
 
           {creditCards.map(renderPaymentMethod)}
 
-          {renderAddButton('Add new credit or debit card', handleAddNewCard)}
+          {renderAddButton(t('payment.addNewCard'), handleAddNewCard)}
         </View>
 
         {/* Other Section */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Other</Text>
+          <Text style={styles.sectionTitle}>{t('payment.other')}</Text>
 
           {otherMethods.map(renderPaymentMethod)}
 
-          {renderAddButton('Add new ID', handleAddNewID)}
+          {renderAddButton(t('payment.addNewId'), handleAddNewID)}
         </View>
       </ScrollView>
     </SafeAreaView>

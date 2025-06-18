@@ -16,6 +16,14 @@ import PaymentInvoiceScreen from '../screens/Payment/PaymentInvoiceScreen';
 import PaymentHistoryScreen from '../screens/Payment/PaymentHistoryScreen';
 import SavedPaymentModesScreen from '../screens/Payment/SavedPaymentModesScreen';
 
+// Import Observations screens
+import ObservationsScreen from '../screens/Observations/ObservationsScreen';
+import SiteEvaluationDetailsScreen from '../screens/Observations/SiteEvaluationDetailsScreen';
+
+// Import Concerns screens
+import ConcernsScreen from '../screens/Concerns/ConcernsScreen';
+import ConcernDetailsScreen from '../screens/Concerns/ConcernDetailsScreen';
+
 const MainStack = createStackNavigator<MainStackParamList>();
 
 const MainNavigator: React.FC = () => {
@@ -98,6 +106,39 @@ const MainNavigator: React.FC = () => {
       <MainStack.Screen
         name="SavedPaymentModes"
         component={SavedPaymentModesScreen}
+        options={{
+          headerShown: false, // Using custom Header component
+        }}
+      />
+
+      {/* Observations Screens */}
+      <MainStack.Screen
+        name="Observations"
+        component={ObservationsScreen}
+        options={{
+          headerShown: false, // Using custom Header component
+        }}
+      />
+
+      <MainStack.Screen
+        name="SiteEvaluationDetails"
+        component={SiteEvaluationDetailsScreen}
+        options={{
+          headerShown: false, // Using custom Header component
+        }}
+      />
+      {/* Concerns Screens */}
+      <MainStack.Screen
+        name="Concerns"
+        component={ConcernsScreen}
+        options={{
+          headerShown: false, // Using custom Header component
+        }}
+      />
+
+      <MainStack.Screen
+        name="ConcernDetails"
+        component={ConcernDetailsScreen}
         options={{
           headerShown: false, // Using custom Header component
         }}

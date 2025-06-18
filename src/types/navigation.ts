@@ -1,4 +1,4 @@
-import { NavigatorScreenParams } from "@react-navigation/native/lib/typescript/src";
+import {NavigatorScreenParams} from '@react-navigation/native/lib/typescript/src';
 
 export type AuthStackParamList = {
   Login: undefined;
@@ -20,6 +20,7 @@ export type MainStackParamList = {
   Profile: undefined;
   Settings: undefined;
   Notifications: undefined;
+
   // Payment screens
   Payment: undefined;
   ChoosePaymentMethod: {
@@ -44,6 +45,40 @@ export type MainStackParamList = {
   };
   PaymentHistory: undefined;
   SavedPaymentModes: undefined;
+
+  // Observations screens
+  Observations: undefined;
+  SiteEvaluationDetails: {
+    observationId: string;
+    observation: {
+      id: string;
+      title: string;
+      reporter: {
+        id: string;
+        name: string;
+        role: string;
+        avatar: any;
+      };
+      reportedDate: string;
+      status: string;
+      service: string;
+      description?: string;
+    };
+  };
+
+  // Concerns screens
+  Concerns: undefined;
+  ConcernDetails: {
+    concernId: string;
+    concern: {
+      id: string;
+      title: string;
+      service: string;
+      serviceDate: string;
+      reportedDate: string;
+      status: 'open' | 'closed';
+    };
+  };
 };
 
 export type RootStackParamList = {

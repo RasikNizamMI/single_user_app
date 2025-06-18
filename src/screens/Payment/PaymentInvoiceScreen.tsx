@@ -91,7 +91,7 @@ const PaymentInvoiceScreen: React.FC = () => {
       // console.log('PDF created at:', pdf.filePath);
     } catch (error) {
       console.error('PDF generation error:', error);
-      Alert.alert('Error', 'Failed to generate PDF');
+      Alert.alert(t('common.error'), 'Failed to generate PDF');
     }
   };
 
@@ -110,8 +110,8 @@ const PaymentInvoiceScreen: React.FC = () => {
         </head>
         <body>
           <div class="header">
-            <h1>Payment Successful!</h1>
-            <p>Invoice ${invoiceData.invoiceNumber}</p>
+            <h1>${t('payment.paymentSuccessful')}</h1>
+            <p>${t('payment.invoice')} ${invoiceData.invoiceNumber}</p>
           </div>
           <!-- Add more invoice content here -->
         </body>
@@ -126,16 +126,18 @@ const PaymentInvoiceScreen: React.FC = () => {
         backgroundColor={theme.colors.background.white}
       />
 
-      <Header title="Payment Invoice" showBackButton />
+      <Header title={t('payment.paymentInvoice')} showBackButton />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         {/* Success Header */}
         <View style={styles.successHeader}>
-          <Text style={styles.successTitle}>Payment Successful!</Text>
+          <Text style={styles.successTitle}>
+            {t('payment.paymentSuccessful')}
+          </Text>
           <Text style={styles.invoiceNumber}>
-            Invoice {invoiceData.invoiceNumber}
+            {t('payment.invoice')} {invoiceData.invoiceNumber}
           </Text>
         </View>
 
@@ -155,7 +157,9 @@ const PaymentInvoiceScreen: React.FC = () => {
               </Text>
             </View>
             <View style={styles.invoiceTitle}>
-              <Text style={styles.invoiceTitleText}>INVOICE</Text>
+              <Text style={styles.invoiceTitleText}>
+                {t('payment.invoice').toUpperCase()}
+              </Text>
             </View>
           </View>
 
@@ -246,7 +250,9 @@ const PaymentInvoiceScreen: React.FC = () => {
         <TouchableOpacity
           style={styles.downloadButton}
           onPress={handleDownloadPDF}>
-          <Text style={styles.downloadButtonText}>Download as PDF</Text>
+          <Text style={styles.downloadButtonText}>
+            {t('payment.downloadAsPdf')}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

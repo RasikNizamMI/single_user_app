@@ -34,7 +34,7 @@ const PaymentHistoryScreen: React.FC = () => {
   const paymentHistory: PaymentHistoryItem[] = [
     {
       id: '1',
-      service: 'Trash Collection',
+      service: t('services.trashCollection'),
       amount: '50',
       startDate: 'Mar 12, 2023',
       endDate: 'Sep 15, 2024',
@@ -44,7 +44,7 @@ const PaymentHistoryScreen: React.FC = () => {
     },
     {
       id: '2',
-      service: 'Trash Collection',
+      service: t('services.trashCollection'),
       amount: '50',
       startDate: 'Mar 12, 2023',
       endDate: 'Sep 15, 2024',
@@ -54,7 +54,7 @@ const PaymentHistoryScreen: React.FC = () => {
     },
     {
       id: '3',
-      service: 'Trash Collection',
+      service: t('services.trashCollection'),
       amount: '50',
       startDate: 'Mar 12, 2023',
       endDate: 'Sep 15, 2024',
@@ -64,7 +64,7 @@ const PaymentHistoryScreen: React.FC = () => {
     },
     {
       id: '4',
-      service: 'Trash Collection',
+      service: t('services.trashCollection'),
       amount: '50',
       startDate: 'Mar 12, 2023',
       endDate: 'Sep 15, 2024',
@@ -90,11 +90,11 @@ const PaymentHistoryScreen: React.FC = () => {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'completed':
-        return 'Completed';
+        return t('services.status.completed');
       case 'pending':
-        return 'Pending';
+        return t('services.status.pending');
       case 'failed':
-        return 'Failed';
+        return 'Failed'; // Add this to translations if needed
       default:
         return status;
     }
@@ -118,24 +118,24 @@ const PaymentHistoryScreen: React.FC = () => {
       <View style={styles.paymentDetails}>
         <View style={styles.detailRow}>
           <View style={styles.detailColumn}>
-            <Text style={styles.detailLabel}>Start & End Date</Text>
+            <Text style={styles.detailLabel}>{t('payment.startEndDate')}</Text>
             <Text style={styles.detailValue}>
               {payment.startDate} - {payment.endDate}
             </Text>
           </View>
           <View style={styles.detailColumn}>
-            <Text style={styles.detailLabel}>Date</Text>
+            <Text style={styles.detailLabel}>{t('payment.date')}</Text>
             <Text style={styles.detailValue}>{payment.paymentDate}</Text>
           </View>
         </View>
 
         <View style={styles.detailRow}>
           <View style={styles.detailColumn}>
-            <Text style={styles.detailLabel}>Payment Mode</Text>
+            <Text style={styles.detailLabel}>{t('payment.paymentMode')}</Text>
             <Text style={styles.detailValue}>{payment.paymentMode}</Text>
           </View>
           <View style={styles.detailColumn}>
-            <Text style={styles.detailLabel}>Payment Status</Text>
+            <Text style={styles.detailLabel}>{t('payment.paymentStatus')}</Text>
             <Text
               style={[
                 styles.statusText,
@@ -156,9 +156,11 @@ const PaymentHistoryScreen: React.FC = () => {
         backgroundColor={theme.colors.background.white}
       />
 
-      <Header title="Payment History" showBackButton />
+      <Header title={t('payment.paymentHistory')} showBackButton />
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}>
         <View style={styles.listContainer}>
           {paymentHistory.map(renderPaymentItem)}
         </View>

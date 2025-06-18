@@ -208,10 +208,18 @@ const HomeScreen: React.FC = () => {
     navigation.navigate('Payment');
   }, []);
 
-  const handleStatsPress = useCallback((type: string): void => {
-    console.log('Stats pressed:', type);
-    // Navigate to respective screen
-  }, []);
+  const handleStatsPress = useCallback(
+    (type: string): void => {
+      console.log('Stats pressed:', type);
+      if (type === 'Observations') {
+        navigation.navigate('Observations');
+      } else if (type === 'Concerns') {
+        navigation.navigate('Concerns');
+      }
+      // Navigate to respective screen
+    },
+    [navigation],
+  );
 
   const handleMoreServicePress = useCallback((serviceId: string): void => {
     console.log('More service pressed:', serviceId);

@@ -31,7 +31,7 @@ const PaymentScreen: React.FC = () => {
   // Mock payment data - replace with actual data
   const paymentData: PaymentData = {
     amount: '40.59',
-    service: 'Dog Walking',
+    service: t('services.dogWalking'),
     dueDate: 'Dec 31, 2024',
   };
 
@@ -68,29 +68,33 @@ const PaymentScreen: React.FC = () => {
         backgroundColor={theme.colors.background.white}
       />
 
-      <Header title="Payment" showBackButton rightIcons={rightIcons} />
+      <Header
+        title={t('payment.title')}
+        showBackButton
+        rightIcons={rightIcons}
+      />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         {/* Payment Card */}
         <View style={styles.paymentCard}>
-          <Text style={styles.amountLabel}>Amount Due</Text>
+          <Text style={styles.amountLabel}>{t('payment.amountDue')}</Text>
           <Text style={styles.amount}>${paymentData.amount}</Text>
 
           <View style={styles.detailsRow}>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Service</Text>
+              <Text style={styles.detailLabel}>{t('payment.service')}</Text>
               <Text style={styles.detailValue}>{paymentData.service}</Text>
             </View>
             <View style={styles.detailItem}>
-              <Text style={styles.detailLabel}>Due date</Text>
+              <Text style={styles.detailLabel}>{t('payment.dueDate')}</Text>
               <Text style={styles.detailValue}>{paymentData.dueDate}</Text>
             </View>
           </View>
 
           <TouchableOpacity style={styles.payButton} onPress={handlePayNow}>
-            <Text style={styles.payButtonText}>Pay Now</Text>
+            <Text style={styles.payButtonText}>{t('payment.payNow')}</Text>
           </TouchableOpacity>
 
           {/* Pagination dots */}
@@ -120,7 +124,7 @@ const PaymentScreen: React.FC = () => {
             <View style={styles.menuIconContainer}>
               <Text style={styles.menuIcon}>🕒</Text>
             </View>
-            <Text style={styles.menuText}>Payment History</Text>
+            <Text style={styles.menuText}>{t('payment.paymentHistory')}</Text>
             <Text style={styles.menuArrow}>›</Text>
           </TouchableOpacity>
 
@@ -130,7 +134,9 @@ const PaymentScreen: React.FC = () => {
             <View style={styles.menuIconContainer}>
               <Text style={styles.menuIcon}>💳</Text>
             </View>
-            <Text style={styles.menuText}>Saved Payment Modes</Text>
+            <Text style={styles.menuText}>
+              {t('payment.savedPaymentModes')}
+            </Text>
             <Text style={styles.menuArrow}>›</Text>
           </TouchableOpacity>
 
@@ -140,7 +146,7 @@ const PaymentScreen: React.FC = () => {
             <View style={styles.menuIconContainer}>
               <Text style={styles.menuIcon}>📅</Text>
             </View>
-            <Text style={styles.menuText}>Schedule Payment</Text>
+            <Text style={styles.menuText}>{t('payment.schedulePayment')}</Text>
             <Text style={styles.menuArrow}>›</Text>
           </TouchableOpacity>
         </View>

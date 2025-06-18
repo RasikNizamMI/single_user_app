@@ -108,22 +108,24 @@ const ChoosePaymentMethodScreen: React.FC = () => {
         backgroundColor={theme.colors.background.white}
       />
 
-      <Header title="Choose Payment Method" showBackButton />
+      <Header title={t('payment.choosePaymentMethod')} showBackButton />
 
       <ScrollView
         style={styles.scrollView}
         showsVerticalScrollIndicator={false}>
         {/* Payment Summary */}
         <View style={styles.summaryCard}>
-          <Text style={styles.summaryLabel}>Payable Amount</Text>
+          <Text style={styles.summaryLabel}>{t('payment.payableAmount')}</Text>
           <Text style={styles.summaryAmount}>${paymentData.amount}</Text>
-          <Text style={styles.summaryService}>Service</Text>
+          <Text style={styles.summaryService}>{t('payment.service')}</Text>
           <Text style={styles.summaryServiceValue}>{paymentData.service}</Text>
         </View>
 
         {/* Payment Methods Section */}
         <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Choose Payment Method</Text>
+          <Text style={styles.sectionTitle}>
+            {t('payment.choosePaymentMethod')}
+          </Text>
 
           {paymentMethods.map(method => (
             <TouchableOpacity
@@ -159,9 +161,7 @@ const ChoosePaymentMethodScreen: React.FC = () => {
             <View style={styles.addIconContainer}>
               <Text style={styles.addIcon}>+</Text>
             </View>
-            <Text style={styles.addNewCardText}>
-              Add new credit or debit card
-            </Text>
+            <Text style={styles.addNewCardText}>{t('payment.addNewCard')}</Text>
             <Text style={styles.menuArrow}>›</Text>
           </TouchableOpacity>
         </View>
@@ -170,7 +170,9 @@ const ChoosePaymentMethodScreen: React.FC = () => {
       {/* Pay Button */}
       <View style={styles.bottomContainer}>
         <TouchableOpacity style={styles.payButton} onPress={handlePay}>
-          <Text style={styles.payButtonText}>Pay ${paymentData.amount}</Text>
+          <Text style={styles.payButtonText}>
+            {t('payment.payNow')} ${paymentData.amount}
+          </Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
