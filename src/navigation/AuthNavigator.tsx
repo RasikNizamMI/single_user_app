@@ -13,9 +13,12 @@ const AuthNavigator: React.FC = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <AuthStack.Screen name="Register" component={RegisterScreen}/> 
+      <AuthStack.Screen name="Register" component={RegisterScreen} />
       <AuthStack.Screen name="Login" component={LoginScreen} />
-      <AuthStack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+      <AuthStack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+      />
     </AuthStack.Navigator>
   );
 };

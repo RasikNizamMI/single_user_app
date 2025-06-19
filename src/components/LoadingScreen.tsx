@@ -1,30 +1,49 @@
+// components/ui/CommonLoader.tsx
 import React from 'react';
-import {View, Text, StyleSheet, ActivityIndicator} from 'react-native';
-import {useTranslation} from 'react-i18next';
+import {
+  Modal,
+  View,
+  ActivityIndicator,
+  Text,
+  StyleSheet,
+} from 'react-native';
 
-const LoadingScreen: React.FC = () => {
-  const {t} = useTranslation();
+interface Props {
+  visible: boolean;
+  text?: string;
+}
 
+const CommonLoader: React.FC<Props> = ({ visible, text }) => {
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size="large" color="#007AFF" />
-      <Text style={styles.text}>{t('common.loading')}</Text>
-    </View>
+    <Modal visible={visible} transparent animationType="fade">
+      <View style={styles.backdrop}>
+        <View style={styles.container}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          {text && <Text style={styles.text}>{text}</Text>}
+        </View>
+      </View>
+    </Modal>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  backdrop: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.3)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+  },
+  container: {
+    padding: 24,
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    alignItems: 'center',
   },
   text: {
-    marginTop: 16,
-    fontSize: 16,
-    color: '#8E8E93',
+    marginTop: 10,
+    fontSize: 14,
+    color: '#333',
   },
 });
 
-export default LoadingScreen;
+export default CommonLoader;

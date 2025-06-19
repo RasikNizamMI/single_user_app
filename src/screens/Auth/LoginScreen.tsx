@@ -1,3 +1,4 @@
+// screens/Auth/LoginScreen.tsx
 import React, {useState} from 'react';
 import {
   View,
@@ -7,28 +8,28 @@ import {
   Text,
   Image,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {
-  AuthNavigationProp,
-  LoginFormData,
-  LoginFormErrors,
-} from '../../types/auth';
-import {useAuth} from '../../context/AuthContext'; // Import useAuth hook
+import {useAuth} from '../../context/AuthContext';
 
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 import Checkbox from '../../components/ui/Checkbox';
 import Images from '../../constants/images';
-import {typography} from '../../constants/typography';
 import {useTranslation} from 'react-i18next';
-import {validateLoginForm, isFormValid} from '../../utils/validation';
 import theme from '../../constants/theme';
+
+interface LoginFormData {
+  email: string;
+  password: string;
+  acceptTerms: boolean;
+}
 
 const LoginScreen: React.FC = () => {
   const {t} = useTranslation();
-  const navigation = useNavigation<AuthNavigationProp>();
-  const {login} = useAuth(); // Use the auth context
+  const navigation = useNavigation();
+  const {login, loading} = useAuth();
 
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
@@ -36,61 +37,50 @@ const LoginScreen: React.FC = () => {
     acceptTerms: false,
   });
 
-  const [errors, setErrors] = useState<LoginFormErrors>({
-    email: '',
-    password: '',
-    terms: '',
-  });
-
-  const handleChange = (
-    field: keyof LoginFormData,
-    value: string | boolean,
-  ) => {
+  const handleChange = (field: keyof LoginFormData, value: string | boolean) => {
     setFormData(prev => ({
       ...prev,
       [field]: value,
     }));
-
-    if (errors[field as keyof LoginFormErrors]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: '',
-      }));
-    }
-  };
-
-  const validateForm = () => {
-    const newErrors = validateLoginForm(formData);
-    setErrors(newErrors);
-    return isFormValid(newErrors);
   };
 
   const handleLogin = async () => {
-    if (validateForm()) {
-      try {
-        const result = await login(formData);
+    // Simple validation
+    if (!formData.email.trim()) {
+      Alert.alert(t('common.error'), 'Please enter your email');
+      return;
+    }
 
-        // Check if login was successful
-        if (result?.success) {
-          // Navigation will be handled automatically by AppNavigator based on auth state
-          console.log('Login successful:', result.message);
-        } else {
-          // Error is already handled by AuthContext with modal
-          console.log('Login failed:', result?.message);
+    if (!formData.password.trim()) {
+      Alert.alert(t('common.error'), 'Please enter your password');
+      return;
+    }
 
-          // Optionally, you can add additional UI feedback here
-          // For example, shake animation, focus on email field, etc.
-        }
-      } catch (error) {
-        // This shouldn't happen now since AuthContext handles errors gracefully
-        console.error('Unexpected login error:', error);
+    if (!formData.acceptTerms) {
+      Alert.alert(t('common.error'), 'Please accept the terms and conditions');
+      return;
+    }
+
+    try {
+      const result = await login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      if (!result.success) {
+        Alert.alert(t('common.error'), result.message);
       }
+      // If successful, navigation will be handled by AuthContext/AppNavigator
+    } catch (error) {
+      Alert.alert(t('common.error'), 'Something went wrong. Please try again.');
     }
   };
 
   const navigateToForgotPassword = () => {
-    navigation.navigate('ForgotPassword');
+    navigation.navigate('ForgotPassword' as never);
   };
+
+  const isLoginDisabled = !formData.email.trim() || !formData.password.trim() || loading;
 
   const TermsLabel = () => (
     <Text style={styles.termsText}>
@@ -103,7 +93,6 @@ const LoginScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {/* Top SafeArea - Blue */}
       <SafeAreaView style={styles.topSafeArea} />
 
       <ScrollView
@@ -121,28 +110,29 @@ const LoginScreen: React.FC = () => {
           <Text style={styles.formTitle}>{t('login.title')}</Text>
 
           <Input
-            label="Mail ID"
+            label={t('login.emailLabel')}
             placeholder={t('login.emailPlaceholder')}
             value={formData.email}
             onChangeText={text => handleChange('email', text)}
-            error={errors.email}
             autoCapitalize="none"
             keyboardType="email-address"
             autoCorrect={false}
+            editable={!loading}
           />
 
           <Input
-            label="Password"
+            label={t('login.passwordLabel')}
             placeholder={t('login.passwordPlaceholder')}
             value={formData.password}
             onChangeText={text => handleChange('password', text)}
-            error={errors.password}
             secureTextEntry
+            editable={!loading}
           />
 
           <TouchableOpacity
             style={styles.forgotPasswordBtn}
-            onPress={navigateToForgotPassword}>
+            onPress={navigateToForgotPassword}
+            disabled={loading}>
             <Text style={styles.forgotPasswordText}>
               {t('login.forgotPassword')}
             </Text>
@@ -152,19 +142,21 @@ const LoginScreen: React.FC = () => {
             checked={formData.acceptTerms}
             onToggle={() => handleChange('acceptTerms', !formData.acceptTerms)}
             labelComponent={<TermsLabel />}
-            error={errors.terms}
             style={styles.checkboxContainer}
+            disabled={loading}
           />
 
           <Button
-            title={t('login.loginButton')}
+            title={loading ? t('common.loading') : t('login.loginButton')}
             onPress={handleLogin}
-            disabled={!formData.email || !formData.password}
+            disabled={isLoginDisabled}
             variant={formData.acceptTerms ? 'primary' : 'secondary'}
             style={styles.loginButton}
+            loading={loading}
           />
         </View>
       </ScrollView>
+      
       <SafeAreaView style={styles.bottomSafeArea} />
     </View>
   );
@@ -197,59 +189,43 @@ const styles = StyleSheet.create({
     height: 110,
     marginBottom: 10,
   },
-  logoText: {
-    ...typography.h1,
-    color: theme.colors.background.white,
-    letterSpacing: 1,
-    marginBottom: 2,
-  },
-  subLogoText: {
-    ...typography.h3,
-    color: theme.colors.background.white,
-    fontWeight: '400',
-    letterSpacing: 0.5,
-  },
   formContainer: {
     flex: 1,
     backgroundColor: theme.colors.background.white,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-    padding: 24,
-    paddingTop: 30,
+    borderTopLeftRadius: theme.borderRadius.xl,
+    borderTopRightRadius: theme.borderRadius.xl,
+    padding: theme.spacing.lg,
+    paddingTop: theme.spacing.xl,
     paddingBottom: 40,
   },
   formTitle: {
-    fontFamily: theme.typography.fontFamily.bold,
-    fontSize: 20,
+    ...theme.typography.h2,
     color: theme.colors.text.primary,
-    marginBottom: 24,
+    marginBottom: theme.spacing.lg,
   },
   forgotPasswordBtn: {
     alignSelf: 'flex-end',
-    marginTop: 5,
-    marginBottom: 20,
+    marginTop: theme.spacing.xs,
+    marginBottom: theme.spacing.md,
   },
   forgotPasswordText: {
+    ...theme.typography.body2,
     color: theme.colors.primary,
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: 14,
   },
   checkboxContainer: {
-    marginBottom: 24,
+    marginBottom: theme.spacing.lg,
   },
   termsText: {
+    ...theme.typography.body2,
     color: theme.colors.disabled,
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: 14,
     flex: 1,
   },
   termsLink: {
+    ...theme.typography.body2,
     color: theme.colors.primary,
-    fontFamily: theme.typography.fontFamily.regular,
-    fontSize: 14,
   },
   loginButton: {
-    marginTop: 8,
+    marginTop: theme.spacing.sm,
   },
 });
 

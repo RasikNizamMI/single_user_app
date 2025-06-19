@@ -1,3 +1,4 @@
+// context/AuthContext.tsx
 import React, {
   createContext,
   useContext,
@@ -5,16 +6,18 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { User, AuthState, LoginCredentials } from '../types/auth';
+import {User, AuthState, LoginCredentials} from '../types/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginResult {
   success: boolean;
   message: string;
+  user?: User;
 }
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<LoginResult>;
-  logout: () => void;
+  logout: () => Promise<void>;
   clearError: () => void;
 }
 
@@ -24,62 +27,137 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+const AUTH_TOKEN_KEY = '@auth_token';
+const USER_DATA_KEY = '@user_data';
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
   const [authState, setAuthState] = useState<AuthState>({
     isAuthenticated: false,
     user: null,
-    loading: false,
+    loading: true, // Start with loading true to check persisted auth
     error: null,
   });
 
-  const login = async (credentials: LoginCredentials): Promise<LoginResult> => {
-    setAuthState(prev => ({ ...prev, loading: true, error: null }));
+  // Check for persisted authentication on app start
+  useEffect(() => {
+    checkAuthState();
+  }, []);
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        if (
-          credentials.email === 'test@example.com' &&
-          credentials.password === 'password'
-        ) {
-          const user: User = {
-            id: '1',
-            email: credentials.email,
-            role: 'user',
-            firstName: 'Test',
-            lastName: 'User',
-          };
+  const checkAuthState = async () => {
+    try {
+      const [token, userData] = await Promise.all([
+        AsyncStorage.getItem(AUTH_TOKEN_KEY),
+        AsyncStorage.getItem(USER_DATA_KEY),
+      ]);
 
-          setAuthState({
-            isAuthenticated: true,
-            user,
-            loading: false,
-            error: null,
-          });
-
-          resolve({ success: true, message: 'Login successful' });
-        } else {
-          setAuthState(prev => ({
-            ...prev,
-            loading: false,
-            error: 'Invalid email or password',
-          }));
-          resolve({ success: false, message: 'Invalid email or password' });
-        }
-      }, 2000); // You can adjust delay time if needed
-    });
+      if (token && userData) {
+        const user: User = JSON.parse(userData);
+        setAuthState({
+          isAuthenticated: true,
+          user,
+          loading: false,
+          error: null,
+        });
+      } else {
+        setAuthState(prev => ({
+          ...prev,
+          loading: false,
+        }));
+      }
+    } catch (error) {
+      console.error('Error checking auth state:', error);
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+      }));
+    }
   };
 
-  const logout = () => {
-    setAuthState({
-      isAuthenticated: false,
-      user: null,
-      loading: false,
-      error: null,
-    });
+  const login = async (credentials: LoginCredentials): Promise<LoginResult> => {
+    // Show brief loading for splash effect
+    setAuthState(prev => ({...prev, loading: true, error: null}));
+
+    try {
+      // Brief delay for splash screen effect
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Simple validation - just check if email and password are not empty
+      if (credentials.email.trim() && credentials.password.trim()) {
+        const user: User = {
+          id: Date.now().toString(), // Simple ID generation
+          email: credentials.email.trim(),
+          role: 'user',
+          firstName: 'User',
+          lastName: '',
+        };
+
+        // Store auth data
+        await Promise.all([
+          AsyncStorage.setItem(AUTH_TOKEN_KEY, `token_${Date.now()}`),
+          AsyncStorage.setItem(USER_DATA_KEY, JSON.stringify(user)),
+        ]);
+
+        setAuthState({
+          isAuthenticated: true,
+          user,
+          loading: false,
+          error: null,
+        });
+
+        return {
+          success: true,
+          message: 'Login successful',
+          user,
+        };
+      } else {
+        const errorMessage = 'Please enter both email and password';
+        setAuthState(prev => ({
+          ...prev,
+          loading: false,
+          error: errorMessage,
+        }));
+
+        return {
+          success: false,
+          message: errorMessage,
+        };
+      }
+    } catch (error) {
+      const errorMessage = 'Something went wrong. Please try again.';
+      setAuthState(prev => ({
+        ...prev,
+        loading: false,
+        error: errorMessage,
+      }));
+
+      return {
+        success: false,
+        message: errorMessage,
+      };
+    }
+  };
+
+  const logout = async () => {
+    try {
+      // Clear stored data
+      await Promise.all([
+        AsyncStorage.removeItem(AUTH_TOKEN_KEY),
+        AsyncStorage.removeItem(USER_DATA_KEY),
+      ]);
+
+      setAuthState({
+        isAuthenticated: false,
+        user: null,
+        loading: false,
+        error: null,
+      });
+    } catch (error) {
+      console.error('Error during logout:', error);
+    }
   };
 
   const clearError = () => {
-    setAuthState(prev => ({ ...prev, error: null }));
+    setAuthState(prev => ({...prev, error: null}));
   };
 
   const value: AuthContextType = {
